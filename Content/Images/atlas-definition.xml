@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas>
+    <Texture>Images/flappy_bird_atlas</Texture>
+    <Regions>
+        <Region name="background" x="0" y="0" width="280" height="512" />
+		<Region name="bird_up" x="409" y="195" width="34" height="24"/>
+		<Region name="bird_mid" x="409" y="219" width="34" height="24"/>
+		<Region name="bird_down" x="409" y="243" width="34" height="24"/>
+		<Region name="base" x="310" y="0" width="336" height="112"/>
+		<Region name="pipe" x="307" y="191" width="52" height="320" />
+    </Regions>
+	<Animations>
+		<Animation name="bird" delay="100">
+			<Frame region="bird_up" />
+			<Frame region="bird_mid" />
+			<Frame region="bird_down" />
+		</Animation>
+	</Animations>
+</TextureAtlas>
