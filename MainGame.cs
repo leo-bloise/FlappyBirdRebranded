@@ -1,13 +1,10 @@
 ﻿using FlappyBird.Entities;
-using FlappyBird.Generators;
 using FlappyBird.Lib;
 using FlappyBird.Lib.Drawing;
 using FlappyBird.Lib.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
 
 namespace FlappyBird;
 
@@ -18,9 +15,7 @@ public class MainGame : Game
     private TextureRegion _background;
     private Base _base;
     private AnimatedSprite _bird;
-    private List<Pipes> _pipes;
-    private PipeGenerator _pipeGenerator;
-    private TimeSpan _elapsedTime = TimeSpan.Zero;
+    private PipeManager _pipeManager;
 
     public static InputManager InputManager { get; private set; }
 
@@ -54,7 +49,10 @@ public class MainGame : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
         TextureAtlas atlas = TextureAtlas.FromFile(Content, "Images/atlas-definition.xml");
-        
+
+        #if DEBUG
+            Debug.CreateInstance(GraphicsDevice, _spriteBatch);
+        #endif
 
         _background = atlas.GetRegion("background");
         _bird = new Bird(atlas.CreateAnimatedSprite("bird").Animation);
@@ -63,20 +61,12 @@ public class MainGame : Game
         
         var pipeRegion = atlas.GetRegion("pipe");
 
-        _pipeGenerator = new PipeGenerator(
-            Window.ClientBounds, 
-            120, 
-            pipeRegion
-        );
-
-        _pipes = new List<Pipes>();
+        _pipeManager = new PipeManager(Window.ClientBounds, 120, pipeRegion);
     }
 
     protected override void Update(GameTime gameTime)
     {
         InputManager.Update();
-
-        _elapsedTime += gameTime.ElapsedGameTime;
 
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -84,13 +74,7 @@ public class MainGame : Game
 
         _bird.Update(gameTime);
         _base.Update();
-        _pipes.ForEach(pipe => pipe.Update());
-
-        if(_elapsedTime >= TimeSpan.FromMilliseconds(5000))
-        {
-            _pipes.Add(_pipeGenerator.Generate());
-            _elapsedTime = TimeSpan.Zero;
-        }
+        _pipeManager.Update(gameTime);
 
         base.Update(gameTime);
     }
@@ -105,7 +89,7 @@ public class MainGame : Game
 
         _bird.Draw(_spriteBatch);
 
-        _pipes.ForEach(pipe => pipe.Draw(_spriteBatch));
+        _pipeManager.DrawPipes(_spriteBatch);
 
         _base.Draw(_spriteBatch);
 
