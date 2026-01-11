@@ -8,11 +8,13 @@ using System.Linq;
 
 namespace FlappyBird.Entities;
 
-public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion region)
+public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion region, Bird bird)
 {
     private Queue<Pipes> _existingPipes = new();
 
     private PipeGenerator _pipeGenerator = new PipeGenerator(bounds, spaceBetweenPipes, region);
+
+    public event Action OnPipeCollision;
 
     public int QuantityOfPipes { get => _existingPipes.Count;  }
 
@@ -24,7 +26,7 @@ public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion 
     {
         foreach (Pipes pipes in _existingPipes)
         {
-            pipes.Update();
+            pipes.Update(bird);
         }
     }
 
@@ -36,8 +38,13 @@ public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion 
 
         if(pipe.UpPipeBoundingBox.X == pipe.Width * -1)
         {
-            _existingPipes.Dequeue();
+            _existingPipes.Dequeue().OnBirdColliding -= HandleBirdColliding;
         }
+    }
+
+    private void HandleBirdColliding()
+    {
+        OnPipeCollision.Invoke();
     }
 
     public void Update(GameTime gameTime)
@@ -53,7 +60,11 @@ public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion 
             return;
         }
 
-        _existingPipes.Enqueue(_pipeGenerator.Generate());
+        var pipe = _pipeGenerator.Generate();
+
+        pipe.OnBirdColliding += HandleBirdColliding;
+
+        _existingPipes.Enqueue(pipe);
         _elpasedTimeBetweenGenerators = _elpasedTimeBetweenGenerators - _intervalBetweenGenerations;
 
         return;

@@ -1,6 +1,7 @@
 ﻿using FlappyBird.Lib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace FlappyBird.Entities;
 
@@ -11,6 +12,8 @@ public class Pipes
     private Vector2 _downPipePosition;
     
     private Vector2 _upPipePosition;
+
+    public event Action OnBirdColliding;
 
     public int Width
     {
@@ -32,14 +35,14 @@ public class Pipes
         _upPipePosition = upPipePosition;
     }
 
-    public void Update() 
+    public void Update(Bird bird) 
     {
         _downPipePosition.X -= 1;
         _upPipePosition.X -= 1;
 
-        if(IsCollidingWith(MainGame._bird))
+        if(IsCollidingWith(bird))
         {
-            MainGame._pause = true;
+            OnBirdColliding.Invoke();
             return;
         }
     }

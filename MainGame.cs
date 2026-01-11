@@ -14,9 +14,9 @@ public class MainGame : Game
     private SpriteBatch _spriteBatch;
     private TextureRegion _background;
     private Base _base;
-    public static Bird _bird;
+    public Bird _bird;
     private PipeManager _pipeManager;
-    public static bool _pause = false;
+    public bool _pause = false;
 
     public static InputManager InputManager { get; private set; }
 
@@ -62,7 +62,12 @@ public class MainGame : Game
         
         var pipeRegion = atlas.GetRegion("pipe");
 
-        _pipeManager = new PipeManager(Window.ClientBounds, 120, pipeRegion);
+        _pipeManager = new PipeManager(Window.ClientBounds, 120, pipeRegion, _bird);
+
+        _pipeManager.OnPipeCollision += () =>
+        {
+            _pause = true;
+        };
     }
 
     protected override void Update(GameTime gameTime)
