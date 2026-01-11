@@ -7,6 +7,13 @@ namespace FlappyBird.Entities;
 
 public class Bird : GravityAnimatedSprite
 {
+    public Rectangle BoundingBox
+    {
+        get {
+            return new Rectangle((int)(Position.X - Origin.X), (int) (Position.Y - Origin.Y), Region.Width -2, Region.Height -2);
+        }
+    }
+
     public Bird(Animation animation) : base(animation)
     {
         CenterOrigin();
@@ -33,5 +40,9 @@ public class Bird : GravityAnimatedSprite
         CalculateRotationBasedOnVelocity();
         
         base.Draw(spriteBatch);
+
+#if DEBUG
+        Debug.Instance.DrawBoundingBox(BoundingBox, Color.Yellow);
+#endif
     }
 }

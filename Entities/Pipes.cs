@@ -36,6 +36,12 @@ public class Pipes
     {
         _downPipePosition.X -= 1;
         _upPipePosition.X -= 1;
+
+        if(IsCollidingWith(MainGame._bird))
+        {
+            MainGame._pause = true;
+            return;
+        }
     }
 
     public Rectangle UpPipeBoundingBox
@@ -82,5 +88,12 @@ public class Pipes
         Debug.Instance.DrawBoundingBox(UpPipeBoundingBox, Color.Blue);
         Debug.Instance.DrawBoundingBox(DownPipeBoundingBox, Color.Red);
         #endif
+    }
+
+    public bool IsCollidingWith(Bird bird)
+    {
+        Rectangle birdBoudingBox = bird.BoundingBox;
+
+        return birdBoudingBox.Intersects(UpPipeBoundingBox) || birdBoudingBox.Intersects(DownPipeBoundingBox);
     }
 }

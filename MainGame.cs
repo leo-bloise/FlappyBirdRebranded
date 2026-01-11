@@ -14,8 +14,9 @@ public class MainGame : Game
     private SpriteBatch _spriteBatch;
     private TextureRegion _background;
     private Base _base;
-    private AnimatedSprite _bird;
+    public static Bird _bird;
     private PipeManager _pipeManager;
+    public static bool _pause = false;
 
     public static InputManager InputManager { get; private set; }
 
@@ -71,6 +72,12 @@ public class MainGame : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
+
+        if(_pause)
+        {
+            base.Update(gameTime);
+            return;
+        }
 
         _bird.Update(gameTime);
         _base.Update();
