@@ -16,6 +16,8 @@ public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion 
 
     public event Action OnPipeCollision;
 
+    public event Action OnScore;
+
     public int QuantityOfPipes { get => _existingPipes.Count;  }
 
     private TimeSpan _elpasedTimeBetweenGenerators = TimeSpan.Zero;
@@ -38,13 +40,21 @@ public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion 
 
         if(pipe.UpPipeBoundingBox.X == pipe.Width * -1)
         {
-            _existingPipes.Dequeue().OnBirdColliding -= HandleBirdColliding;
+            var pipeRemoved = _existingPipes.Dequeue();
+
+            pipeRemoved.OnBirdPassthrough -= HandleBirdPassthrough;
+            pipeRemoved.OnBirdColliding -= HandleBirdColliding;
         }
     }
 
     private void HandleBirdColliding()
     {
         OnPipeCollision.Invoke();
+    }
+
+    private void HandleBirdPassthrough()
+    {
+        OnScore.Invoke();
     }
 
     public void Update(GameTime gameTime)
@@ -63,6 +73,8 @@ public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion 
         var pipe = _pipeGenerator.Generate();
 
         pipe.OnBirdColliding += HandleBirdColliding;
+
+        pipe.OnBirdPassthrough += HandleBirdPassthrough;
 
         _existingPipes.Enqueue(pipe);
         _elpasedTimeBetweenGenerators = _elpasedTimeBetweenGenerators - _intervalBetweenGenerations;

@@ -13,7 +13,11 @@ public class Pipes
     
     private Vector2 _upPipePosition;
 
+    public bool AlreadyGone { get; private set; }
+
     public event Action OnBirdColliding;
+
+    public event Action OnBirdPassthrough;
 
     public int Width
     {
@@ -45,6 +49,13 @@ public class Pipes
             OnBirdColliding.Invoke();
             return;
         }
+
+        if(!AlreadyGone && IsAfter(bird.Position))
+        {
+            OnBirdPassthrough.Invoke();
+            AlreadyGone = true;
+            return;
+        }
     }
 
     public Rectangle UpPipeBoundingBox
@@ -61,6 +72,11 @@ public class Pipes
         {
             return new Rectangle((int)_downPipePosition.X, (int)_downPipePosition.Y, _region.Width, _region.Height);
         }
+    }
+
+    public bool IsAfter(Vector2 position)
+    {
+        return position.X > _upPipePosition.X + _region.Width;
     }
 
     public void Draw(SpriteBatch spriteBatch)

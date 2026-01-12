@@ -13,6 +13,16 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin flappy-font.ttf
+/copy:flappy-font.ttf
+
+#begin Flappy.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Flappy.spritefont
+
 #begin Images/atlas-definition.xml
 /copy:Images/atlas-definition.xml
 

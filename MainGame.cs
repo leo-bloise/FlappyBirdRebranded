@@ -17,6 +17,7 @@ public class MainGame : Game
     public Bird _bird;
     private PipeManager _pipeManager;
     public bool _pause = false;
+    private Score _score;
 
     public static InputManager InputManager { get; private set; }
 
@@ -59,6 +60,7 @@ public class MainGame : Game
         _bird = new Bird(atlas.CreateAnimatedSprite("bird").Animation);
         _base = new Base(atlas.GetRegion("base"), Window.ClientBounds);
         _bird.Position = GetRectangleCenter(Window.ClientBounds);
+        _score = new Score(Content.Load<SpriteFont>("Flappy"));
         
         var pipeRegion = atlas.GetRegion("pipe");
 
@@ -67,6 +69,14 @@ public class MainGame : Game
         _pipeManager.OnPipeCollision += () =>
         {
             _pause = true;
+        };
+
+        _pipeManager.OnScore += () =>
+        {
+            if(!_pause)
+            {
+                _score.Increment();
+            }
         };
     }
 
@@ -92,7 +102,7 @@ public class MainGame : Game
     }
 
     protected override void Draw(GameTime gameTime)
-    {
+    { 
         GraphicsDevice.Clear(Color.Black);
         
         _spriteBatch.Begin();
@@ -104,6 +114,8 @@ public class MainGame : Game
         _pipeManager.DrawPipes(_spriteBatch);
 
         _base.Draw(_spriteBatch);
+
+        _score.Draw(_spriteBatch, Window.ClientBounds);
 
         _spriteBatch.End();
 
