@@ -38,3 +38,33 @@
 /processorParam:TextureFormat=Color
 /build:Images/flappy_bird_atlas.png
 
+#begin Sounds/die.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/die.ogg
+
+#begin Sounds/hit.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/hit.ogg
+
+#begin Sounds/point.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/point.ogg
+
+#begin Sounds/swoosh.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/swoosh.ogg
+
+#begin Sounds/wing.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/wing.ogg
+
