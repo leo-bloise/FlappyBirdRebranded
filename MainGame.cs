@@ -5,6 +5,7 @@ using FlappyBird.Lib.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace FlappyBird;
 
@@ -35,6 +36,11 @@ public class MainGame : Game
         _graphics.PreferredBackBufferWidth = 280;
         _graphics.PreferredBackBufferHeight = 512;
         _graphics.ApplyChanges();
+        
+        AudioManager.Instance.LoadSong("die", Content.Load<Song>("Sounds/die"));
+        AudioManager.Instance.LoadSong("hit", Content.Load<Song>("Sounds/hit"));
+        AudioManager.Instance.LoadSong("wing", Content.Load<Song>("Sounds/wing"));
+        AudioManager.Instance.LoadSong("point", Content.Load<Song>("Sounds/point"));
 
         InputManager = new InputManager();
 
@@ -68,6 +74,7 @@ public class MainGame : Game
 
         _pipeManager.OnPipeCollision += () =>
         {
+            AudioManager.Instance.Play("hit");
             _pause = true;
         };
 
@@ -75,6 +82,7 @@ public class MainGame : Game
         {
             if(!_pause)
             {
+                AudioManager.Instance.Play("point");
                 _score.Increment();
             }
         };
