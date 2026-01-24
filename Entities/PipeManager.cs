@@ -49,12 +49,12 @@ public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion 
 
     private void HandleBirdColliding()
     {
-        OnPipeCollision.Invoke();
+        OnPipeCollision?.Invoke();
     }
 
     private void HandleBirdPassthrough()
     {
-        OnScore.Invoke();
+        OnScore?.Invoke();
     }
 
     public void Update(GameTime gameTime)

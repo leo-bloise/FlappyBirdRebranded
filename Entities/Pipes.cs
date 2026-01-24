@@ -102,11 +102,6 @@ public class Pipes
             Vector2.One, 
             SpriteEffects.None, 0f
         );
-
-        #if DEBUG
-        Debug.Instance.DrawBoundingBox(UpPipeBoundingBox, Color.Blue);
-        Debug.Instance.DrawBoundingBox(DownPipeBoundingBox, Color.Red);
-        #endif
     }
 
     public bool IsCollidingWith(Bird bird)

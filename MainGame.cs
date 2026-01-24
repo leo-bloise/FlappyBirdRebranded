@@ -32,6 +32,8 @@ public class MainGame : Game
 
     public static InputManager InputManager { get; private set; }
 
+    public static AudioThread AudioThread { get; private set; }
+
     public MainGame()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -75,6 +77,10 @@ public class MainGame : Game
         AudioManager.Instance.LoadSong("hit", Content.Load<Song>("Sounds/hit"));
         AudioManager.Instance.LoadSong("point", Content.Load<Song>("Sounds/point"));
         AudioManager.Instance.LoadSong("swoosh", Content.Load<Song>("Sounds/swoosh"));
+
+        AudioThread = new AudioThread();
+
+        AudioThread.Start();
     }
 
     private void TransitionScene()
