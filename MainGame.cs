@@ -2,90 +2,91 @@
 using FlappyBird.Lib;
 using FlappyBird.Lib.Drawing;
 using FlappyBird.Lib.Input;
+using FlappyBird.Scenes;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+using System;
 
 namespace FlappyBird;
 
 public class MainGame : Game
 {
+    public static Scene ActiveScene { get; private set; }
+
+    public static Scene NextScene { get; private set; }
+
     private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
-    private TextureRegion _background;
-    private Base _base;
-    public Bird _bird;
-    private PipeManager _pipeManager;
-    public bool _pause = false;
-    private Score _score;
+
+    private static SpriteBatch _spriteBatch;
+
+    private static Rectangle _destinationRectangle;
+
+    public static Rectangle DestinationRectangle { get => _destinationRectangle; }
+
+    public static SpriteBatch SpriteBatch => _spriteBatch;
+
+    public static ContentManager ContentManager { get; private set; }
 
     public static InputManager InputManager { get; private set; }
 
     public MainGame()
     {
         _graphics = new GraphicsDeviceManager(this);
-        Content.RootDirectory = "Content";
         IsMouseVisible = true;
     }
 
     protected override void Initialize()
     {
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        Window.Title = "Flappy Bird";
         Window.AllowUserResizing = false;
+
         _graphics.IsFullScreen = false;
         _graphics.PreferredBackBufferWidth = 280;
         _graphics.PreferredBackBufferHeight = 512;
         _graphics.ApplyChanges();
-        
-        AudioManager.Instance.LoadSong("die", Content.Load<Song>("Sounds/die"));
-        AudioManager.Instance.LoadSong("hit", Content.Load<Song>("Sounds/hit"));
-        AudioManager.Instance.LoadSong("wing", Content.Load<Song>("Sounds/wing"));
-        AudioManager.Instance.LoadSong("point", Content.Load<Song>("Sounds/point"));
 
         InputManager = new InputManager();
+
+        Content.RootDirectory = "Content";
+        ContentManager = base.Content;
+        
+        _destinationRectangle = new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+        Window.ClientSizeChanged += (s, e) =>
+        {
+            _destinationRectangle = new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+        };
+
+        ChangeScene(new MainMenu());
 
         base.Initialize();
     }
 
-    private Vector2 GetRectangleCenter(Rectangle rectangle)
-    {
-        return new Vector2(rectangle.Width, rectangle.Height) * 0.5f;
-    }
-
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        base.LoadContent();
+    }
 
-        TextureAtlas atlas = TextureAtlas.FromFile(Content, "Images/atlas-definition.xml");
+    private void TransitionScene()
+    {
+        if(ActiveScene != null)
+        {
+            ActiveScene.Dispose();
+        }
 
-        #if DEBUG
-            Debug.CreateInstance(GraphicsDevice, _spriteBatch);
-        #endif
+        GC.Collect();
 
-        _background = atlas.GetRegion("background");
-        _bird = new Bird(atlas.CreateAnimatedSprite("bird").Animation);
-        _base = new Base(atlas.GetRegion("base"), Window.ClientBounds);
-        _bird.Position = GetRectangleCenter(Window.ClientBounds);
-        _score = new Score(Content.Load<SpriteFont>("Flappy"));
+        ActiveScene = NextScene;
         
-        var pipeRegion = atlas.GetRegion("pipe");
+        NextScene = null;
 
-        _pipeManager = new PipeManager(Window.ClientBounds, 120, pipeRegion, _bird);
-
-        _pipeManager.OnPipeCollision += () =>
+        if(ActiveScene != null)
         {
-            AudioManager.Instance.Play("hit");
-            _pause = true;
-        };
-
-        _pipeManager.OnScore += () =>
-        {
-            if(!_pause)
-            {
-                AudioManager.Instance.Play("point");
-                _score.Increment();
-            }
-        };
+            ActiveScene.Initialize();
+        }
     }
 
     protected override void Update(GameTime gameTime)
@@ -96,36 +97,36 @@ public class MainGame : Game
             Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        if(_pause)
+        if(NextScene != null)
         {
-            base.Update(gameTime);
-            return;
+            TransitionScene();
         }
 
-        _bird.Update(gameTime);
-        _base.Update();
-        _pipeManager.Update(gameTime);
+        if (ActiveScene != null)
+        {
+            ActiveScene.Update(gameTime);
+        }
 
         base.Update(gameTime);
     }
 
+    public static void ChangeScene(Scene newScene)
+    {
+        if(ActiveScene != newScene)
+        {
+            NextScene = newScene;
+        }
+    }   
+
     protected override void Draw(GameTime gameTime)
-    { 
-        GraphicsDevice.Clear(Color.Black);
-        
-        _spriteBatch.Begin();
+    {
+        if(ActiveScene == null)
+        {
+            base.Draw(gameTime);
+            return;
+        }
 
-        DrawHelper.Draw(_spriteBatch, _background);
-
-        _bird.Draw(_spriteBatch);
-
-        _pipeManager.DrawPipes(_spriteBatch);
-
-        _base.Draw(_spriteBatch);
-
-        _score.Draw(_spriteBatch, Window.ClientBounds);
-
-        _spriteBatch.End();
+        ActiveScene.Draw(gameTime);
 
         base.Draw(gameTime);
     }

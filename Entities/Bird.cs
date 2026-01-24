@@ -19,11 +19,16 @@ public class Bird : GravityAnimatedSprite
         CenterOrigin();
     }
 
+    public Bird(Animation animation, Vector2 gravity) : base(animation, gravity)
+    {
+        CenterOrigin();
+    }
+
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);
 
-        if(MainGame.InputManager.KeyboardInfo.WasKeyJustPressed(Microsoft.Xna.Framework.Input.Keys.Space))
+        if(MainGame.InputManager.KeyboardInfo.WasKeyJustPressed(Microsoft.Xna.Framework.Input.Keys.Space) && IsGravityEnabled)
         {
             AudioManager.Instance.Play("wing");
             _velocity = new Vector2(_velocity.X, -350f);
@@ -41,9 +46,5 @@ public class Bird : GravityAnimatedSprite
         CalculateRotationBasedOnVelocity();
         
         base.Draw(spriteBatch);
-
-#if DEBUG
-        Debug.Instance.DrawBoundingBox(BoundingBox, Color.Yellow);
-#endif
     }
 }

@@ -1,9 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FlappyBird.Lib.Physics;
 
@@ -15,8 +10,15 @@ public class GravityAnimatedSprite : AnimatedSprite
 
     private Vector2 _terminalVelocity = new Vector2(0, 500f);
 
+    public bool IsGravityEnabled { get => _gravity != Vector2.Zero; }
+
     public GravityAnimatedSprite(Animation animation) : base(animation)
     {
+    }
+
+    public GravityAnimatedSprite(Animation animation, Vector2 gravity): base(animation)
+    {
+        _gravity = gravity;
     }
 
     public override void Update(GameTime gameTime)
