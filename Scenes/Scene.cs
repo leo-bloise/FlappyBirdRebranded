@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System;
-using System.Net.Http.Headers;
 
 namespace FlappyBird.Scenes;
 

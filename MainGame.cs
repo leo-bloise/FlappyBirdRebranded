@@ -1,6 +1,4 @@
-﻿using FlappyBird.Entities;
-using FlappyBird.Lib;
-using FlappyBird.Lib.Drawing;
+﻿using FlappyBird.Lib;
 using FlappyBird.Lib.Input;
 using FlappyBird.Scenes;
 using Microsoft.Xna.Framework;
