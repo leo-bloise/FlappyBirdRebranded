@@ -2,6 +2,7 @@
 using FlappyBird.Lib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace FlappyBird.Scenes;
 
@@ -21,6 +22,9 @@ public class Gameplay : Scene
 
     private bool _pause = false;
 
+    private TimeSpan ElapsedBetweenFrames = TimeSpan.Zero;
+    private SpriteFont _messageFont;
+
     public Gameplay(Bird bird)
     {
         bird.RestoreGravity();
@@ -37,9 +41,11 @@ public class Gameplay : Scene
         _background = _sceneAtlas.GetRegion("background");
 
         _bird.Position = new Vector2(MainGame.DestinationRectangle.Width, MainGame.DestinationRectangle.Height) * 0.5f;
-        _pipeManager = new PipeManager(MainGame.DestinationRectangle, 150, _sceneAtlas.GetRegion("pipe"), _bird);
+        _pipeManager = new PipeManager(MainGame.DestinationRectangle, 130, _sceneAtlas.GetRegion("pipe"), _bird);
 
         _score = new Score(Content.Load<SpriteFont>("Flappy"));
+
+        _messageFont = Content.Load<SpriteFont>("MessageNew");
 
         _pipeManager.OnPipeCollision += () =>
         {
@@ -54,18 +60,46 @@ public class Gameplay : Scene
         };
     }
 
+    private Rectangle EnvironmentBoundingBox
+    {
+        get {
+            var destRect = MainGame.DestinationRectangle;
+
+            return new Rectangle(
+                destRect.X,
+                destRect.Y,
+                destRect.Width,
+                destRect.Height - _base.Height
+                );
+        }
+    }
     public override Scene Update(GameTime gameTime)
     {
-        base.Update(gameTime);
-          
+        base.Update(gameTime);  
+
+        ElapsedBetweenFrames += gameTime.ElapsedGameTime;
+
+        if (ElapsedBetweenFrames >= TimeSpan.FromSeconds(30))
+        {
+            _pipeManager.Difficulty = Math.Max(_pipeManager.Difficulty - 0.1f, 0.01f);
+
+            ElapsedBetweenFrames -= TimeSpan.FromSeconds(30);
+        } 
+
         if(_pause)
         {
-            return null;
+            return new EndGame(_score);
         }
 
         _base.Update();
         _bird.Update(gameTime);
         _pipeManager.Update(gameTime);
+
+        if(!EnvironmentBoundingBox.Intersects(_bird.BoundingBox))
+        {
+            MainGame.AudioThread.Enqueue("hit");
+            _pause = true;
+        }
 
         return null;
     }

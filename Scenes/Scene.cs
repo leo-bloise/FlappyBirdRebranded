@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using System;
+using Microsoft.Xna.Framework.Graphics;
+
+// NOTE: keep Content-related helpers here so all scenes can load assets with fallbacks.
 
 namespace FlappyBird.Scenes;
 

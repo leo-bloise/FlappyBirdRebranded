@@ -13,6 +13,10 @@ public class Base
     private Vector2 _position1;
 
     private Vector2 _position2;
+
+    public int Width { get => _sprite.Width; }
+
+    public int Height { get => _sprite.Height; }
     
     public Base(TextureRegion region, Rectangle destinationRectangle) 
     {

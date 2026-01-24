@@ -24,6 +24,10 @@ public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion 
 
     private TimeSpan _intervalBetweenGenerations = TimeSpan.FromMilliseconds(4000);
 
+    public TimeSpan IntervalBetweenGenerations { get => _intervalBetweenGenerations * Difficulty; }
+
+    public float Difficulty { get; set; } = 1;
+
     private void UpdatePipes()
     {
         foreach (Pipes pipes in _existingPipes)
@@ -65,7 +69,7 @@ public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion 
 
         UpdatePipes();
 
-        if (_elpasedTimeBetweenGenerators < _intervalBetweenGenerations)
+        if (_elpasedTimeBetweenGenerators < IntervalBetweenGenerations)
         {
             return;
         }
@@ -77,7 +81,7 @@ public class PipeManager(Rectangle bounds, int spaceBetweenPipes, TextureRegion 
         pipe.OnBirdPassthrough += HandleBirdPassthrough;
 
         _existingPipes.Enqueue(pipe);
-        _elpasedTimeBetweenGenerators = _elpasedTimeBetweenGenerators - _intervalBetweenGenerations;
+        _elpasedTimeBetweenGenerators = _elpasedTimeBetweenGenerators - IntervalBetweenGenerations;
 
         return;
     }

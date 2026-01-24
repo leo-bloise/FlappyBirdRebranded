@@ -61,7 +61,7 @@ public class MainGame : Game
             _destinationRectangle = new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
         };
 
-        ChangeScene(new MainMenu());
+        NextScene = new MainMenu();
 
         base.Initialize();
     }
@@ -110,7 +110,7 @@ public class MainGame : Game
 
         if(NextScene != null)
         {
-            TransitionScene();
+             TransitionScene();
         }
 
         if (ActiveScene != null)
@@ -120,14 +120,6 @@ public class MainGame : Game
 
         base.Update(gameTime);
     }
-
-    public static void ChangeScene(Scene newScene)
-    {
-        if(ActiveScene != newScene)
-        {
-            NextScene = newScene;
-        }
-    }   
 
     protected override void Draw(GameTime gameTime)
     {
