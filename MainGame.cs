@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 
 namespace FlappyBird;
@@ -68,6 +69,12 @@ public class MainGame : Game
     protected override void LoadContent()
     {
         base.LoadContent();
+
+        AudioManager.Instance.LoadSong("die", Content.Load<Song>("Sounds/die"));
+        AudioManager.Instance.LoadSong("wing", Content.Load<Song>("Sounds/wing"));
+        AudioManager.Instance.LoadSong("hit", Content.Load<Song>("Sounds/hit"));
+        AudioManager.Instance.LoadSong("point", Content.Load<Song>("Sounds/point"));
+        AudioManager.Instance.LoadSong("swoosh", Content.Load<Song>("Sounds/swoosh"));
     }
 
     private void TransitionScene()
@@ -104,7 +111,7 @@ public class MainGame : Game
 
         if (ActiveScene != null)
         {
-            ActiveScene.Update(gameTime);
+            NextScene = ActiveScene.Update(gameTime);
         }
 
         base.Update(gameTime);

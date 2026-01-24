@@ -21,6 +21,11 @@ public class GravityAnimatedSprite : AnimatedSprite
         _gravity = gravity;
     }
 
+    public void RestoreGravity()
+    {
+        _gravity = new Vector2(0, 800f);
+    }
+
     public override void Update(GameTime gameTime)
     {
         base.Update(gameTime);

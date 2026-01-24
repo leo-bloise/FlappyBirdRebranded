@@ -28,7 +28,7 @@ public class Bird : GravityAnimatedSprite
     {
         base.Update(gameTime);
 
-        if(MainGame.InputManager.KeyboardInfo.WasKeyJustPressed(Microsoft.Xna.Framework.Input.Keys.Space) && IsGravityEnabled)
+        if(MainGame.InputManager.KeyboardInfo.WasKeyJustPressed(Microsoft.Xna.Framework.Input.Keys.Space))
         {
             AudioManager.Instance.Play("wing");
             _velocity = new Vector2(_velocity.X, -350f);

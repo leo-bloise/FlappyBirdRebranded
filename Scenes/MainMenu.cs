@@ -2,6 +2,8 @@
 using FlappyBird.Lib;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
 using System.IO;
 
 namespace FlappyBird.Scenes;
@@ -17,6 +19,19 @@ public class MainMenu : Scene
     private Base _base;
 
     private Bird _bird;
+
+    public override void UnloadContent()
+    {
+        base.UnloadContent();
+
+        _base = null;
+        _bird = null;
+        _sceneAtlas = null;
+        _background = null;
+        _message = null;
+
+        GC.Collect();
+    }
 
     public override void LoadContent()
     {
@@ -50,12 +65,19 @@ public class MainMenu : Scene
         return new Vector2(MainGame.DestinationRectangle.Width / 2, MainGame.DestinationRectangle.Height / 3);
     }
 
-    public override void Update(GameTime gameTime)
+    public override Scene Update(GameTime gameTime)
     {
         base.Update(gameTime);
 
         _base.Update();
         _bird.Update(gameTime);
+
+        if (MainGame.InputManager.KeyboardInfo.WasKeyJustPressed(Keys.Space))
+        {
+            return new Gameplay(_bird);
+        }
+
+        return null;
     }
 
     public override void Draw(GameTime gameTime)

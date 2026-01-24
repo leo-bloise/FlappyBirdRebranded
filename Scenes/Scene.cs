@@ -51,7 +51,7 @@ public abstract class Scene : IDisposable
         Content.Unload();
     }
 
-    public virtual void Update(GameTime gameTime) { }
+    public virtual Scene Update(GameTime gameTime) => null;
 
     public virtual void Draw(GameTime gameTime) { }
 
