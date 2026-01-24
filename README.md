@@ -1,5 +1,7 @@
 ﻿# 🐦 Flappy Bird
 
+https://github.com/user-attachments/assets/447edf69-62ea-4c75-b78a-b88eebca5006
+
 This project is a full re-creation of **Flappy Bird**, built from scratch using **MonoGame**.
 
 Previously, I had partially recreated Flappy Bird in [this repository](https://github.com/leo-bloise/FlappyBird). However, due to limited game development experience at the time and some poor architectural decisions, the project did not behave as expected.
